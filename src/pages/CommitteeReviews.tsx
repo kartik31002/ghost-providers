@@ -244,7 +244,7 @@ export const CommitteeReviews: React.FC = () => {
             title="In Review"
             value={stats.inReview}
             icon={<GroupIcon />}
-            color="info"
+            color="primary"
             trend={{ value: 3.1, isPositive: true }}
           />
         </Grid>

@@ -20,7 +20,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Router>
+        <Router basename="/ghost-providers"> {/* Add this basename */}
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Navigate to="/dashboard/intake" replace />} />
