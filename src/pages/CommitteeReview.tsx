@@ -94,7 +94,7 @@ export const CommitteeReview: React.FC = () => {
       case 'request-info':
         return 'warning';
       default:
-        return 'default';
+        return 'success';
     }
   };
 

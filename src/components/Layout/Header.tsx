@@ -23,6 +23,7 @@ import {
   Person,
 } from '@mui/icons-material';
 import { useAppStore } from '../../store';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -32,6 +33,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const { user, notifications, unreadNotifications, clearNotifications } = useAppStore();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [notificationsAnchorEl, setNotificationsAnchorEl] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
 
   const handleProfileMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -80,13 +82,25 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
         </Box>
 
         <Box sx={{ display: 'flex', gap: 2, flexGrow: 1 }}>
-          <Button color="inherit" sx={{ textTransform: 'none' }}>
+          <Button
+            color="inherit"
+            sx={{ textTransform: 'none' }}
+            onClick={() => navigate('/dashboard')}
+          >
             Dashboard
           </Button>
-          <Button color="inherit" sx={{ textTransform: 'none' }}>
+          <Button
+            color="inherit"
+            sx={{ textTransform: 'none' }}
+            onClick={() => navigate('/committee')}
+          >
             Committee Panel
           </Button>
-          <Button color="inherit" sx={{ textTransform: 'none' }}>
+          <Button
+            color="inherit"
+            sx={{ textTransform: 'none' }}
+            onClick={() => navigate('/verification')}
+          >
             PSV
           </Button>
         </Box>
