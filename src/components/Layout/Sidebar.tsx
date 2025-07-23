@@ -35,7 +35,7 @@ const menuItems = [
     path: '/dashboard/intake',
   },
   {
-    text: 'Roster Intake',
+    text: 'Roster Automation Intake',
     icon: <PersonAddIcon />,
     path: '/intake/roster',
   },

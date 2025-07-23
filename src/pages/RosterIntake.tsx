@@ -51,6 +51,7 @@ import { useAppStore } from '../store';
 
 interface RosterProvider {
   id: string;
+  roId: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -66,7 +67,56 @@ const steps = ['Provider Information', 'Credentials', 'Review & Submit'];
 export const RosterIntake: React.FC = () => {
   const { addNotification } = useAppStore();
   const [activeStep, setActiveStep] = useState(0);
-  const [rosterProviders, setRosterProviders] = useState<RosterProvider[]>([]);
+  const [rosterProviders, setRosterProviders] = useState<RosterProvider[]>([
+    {
+      id: '1',
+      roId: 'RO-1001',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@email.com',
+      phone: '(555) 123-4567',
+      npi: '1234567890',
+      specialty: 'Family Medicine',
+      status: 'draft',
+      validationErrors: [],
+    },
+    {
+      id: '2',
+      roId: 'RO-1002',
+      firstName: 'Jane',
+      lastName: 'Smith',
+      email: 'jane.smith@email.com',
+      phone: '(555) 987-6543',
+      npi: '9876543210',
+      specialty: 'Pediatrics',
+      status: 'submitted',
+      validationErrors: [],
+    },
+    {
+      id: '3',
+      roId: 'RO-1003',
+      firstName: 'Michael',
+      lastName: 'Brown',
+      email: 'michael.brown@email.com',
+      phone: '(555) 555-1212',
+      npi: '',
+      specialty: 'Surgery',
+      status: 'validated',
+      validationErrors: [],
+    },
+    {
+      id: '4',
+      roId: 'RO-1004',
+      firstName: 'Emily',
+      lastName: 'White',
+      email: 'emily.white@email.com',
+      phone: '(555) 555-1313',
+      npi: '2233445566',
+      specialty: 'Cardiology',
+      status: 'failed',
+      validationErrors: ['NPI missing'],
+    },
+  ]);
   const [selectedProvider, setSelectedProvider] = useState<RosterProvider | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [page, setPage] = useState(0);
@@ -78,20 +128,21 @@ export const RosterIntake: React.FC = () => {
     phone: '',
     npi: '',
     specialty: '',
+    roId: '',
   });
 
-  const handleAddProvider = () => {
-    setSelectedProvider(null);
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      npi: '',
-      specialty: '',
-    });
-    setDialogOpen(true);
-  };
+  // const handleAddProvider = () => {
+  //   setSelectedProvider(null);
+  //   setFormData({
+  //     firstName: '',
+  //     lastName: '',
+  //     email: '',
+  //     phone: '',
+  //     npi: '',
+  //     specialty: '',
+  //   });
+  //   setDialogOpen(true);
+  // };
 
   const handleEditProvider = (provider: RosterProvider) => {
     setSelectedProvider(provider);
@@ -102,6 +153,7 @@ export const RosterIntake: React.FC = () => {
       phone: provider.phone,
       npi: provider.npi || '',
       specialty: provider.specialty,
+      roId: provider.roId,
     });
     setDialogOpen(true);
   };
@@ -147,20 +199,20 @@ export const RosterIntake: React.FC = () => {
     });
   };
 
-  const handleSubmitRoster = () => {
-    const updatedProviders = rosterProviders.map(provider => ({
-      ...provider,
-      status: 'submitted' as const,
-    }));
-    setRosterProviders(updatedProviders);
+  // const handleSubmitRoster = () => {
+  //   const updatedProviders = rosterProviders.map(provider => ({
+  //     ...provider,
+  //     status: 'submitted' as const,
+  //   }));
+  //   setRosterProviders(updatedProviders);
     
-    addNotification({
-      message: `${rosterProviders.length} providers submitted for validation`,
-      type: 'success',
-      timestamp: new Date().toISOString(),
-      read: false,
-    });
-  };
+  //   addNotification({
+  //     message: `${rosterProviders.length} providers submitted for validation`,
+  //     type: 'success',
+  //     timestamp: new Date().toISOString(),
+  //     read: false,
+  //   });
+  // };
 
   const getStatusColor = (status: RosterProvider['status']) => {
     switch (status) {
@@ -179,15 +231,15 @@ export const RosterIntake: React.FC = () => {
     <Box>
       <Box mb={3}>
         <Typography variant="h4" component="h1" gutterBottom fontWeight={600}>
-          Provider Roster Intake
+        Roster Auotmation Intake 
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Manually add providers to the credentialing roster for batch processing
+        Records routed via roster automation for credentailling 
         </Typography>
       </Box>
 
       {/* Progress Stepper */}
-      <Paper sx={{ p: 3, mb: 3 }}>
+      {/* <Paper sx={{ p: 3, mb: 3 }}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
             <Step key={label}>
@@ -195,24 +247,24 @@ export const RosterIntake: React.FC = () => {
             </Step>
           ))}
         </Stepper>
-      </Paper>
+      </Paper> */}
 
       <Grid container spacing={3}>
         {/* Main Content */}
         <Grid item xs={12} md={8}>
           <Card>
             <CardHeader
-              title="Provider Roster"
-              subheader={`${rosterProviders.length} providers in current roster`}
-              action={
-                <Button
-                  variant="contained"
-                  startIcon={<AddIcon />}
-                  onClick={handleAddProvider}
-                >
-                  Add Provider
-                </Button>
-              }
+              title="Providers"
+              subheader={`${rosterProviders.length} providers from roster automation`}
+              // action={
+              //   <Button
+              //     variant="contained"
+              //     startIcon={<AddIcon />}
+              //     onClick={handleAddProvider}
+              //   >
+              //     Add Provider
+              //   </Button>
+              // }
             />
             <CardContent>
               <TableContainer>
@@ -220,6 +272,7 @@ export const RosterIntake: React.FC = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell>Name</TableCell>
+                      <TableCell>RO-ID</TableCell>
                       <TableCell>Contact</TableCell>
                       <TableCell>NPI</TableCell>
                       <TableCell>Specialty</TableCell>
@@ -235,6 +288,11 @@ export const RosterIntake: React.FC = () => {
                           <TableCell>
                             <Typography variant="body2" fontWeight={600}>
                               {provider.firstName} {provider.lastName}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body2" fontWeight={600}>
+                              {provider.roId}
                             </Typography>
                           </TableCell>
                           <TableCell>
@@ -299,7 +357,7 @@ export const RosterIntake: React.FC = () => {
 
         {/* Actions Panel */}
         <Grid item xs={12} md={4}>
-          <Card sx={{ mb: 3 }}>
+          {/* <Card sx={{ mb: 3 }}>
             <CardHeader title="Roster Actions" />
             <CardContent>
               <Box display="flex" flexDirection="column" gap={2}>
@@ -346,7 +404,7 @@ export const RosterIntake: React.FC = () => {
                 </Button>
               </Box>
             </CardContent>
-          </Card>
+          </Card> */}
 
           <Card>
             <CardHeader title="Validation Summary" />
@@ -410,6 +468,14 @@ export const RosterIntake: React.FC = () => {
                 value={formData.lastName}
                 onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
                 required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="RO-ID"
+                value={formData.roId}
+                onChange={(e) => setFormData(prev => ({ ...prev, roId: e.target.value }))}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
