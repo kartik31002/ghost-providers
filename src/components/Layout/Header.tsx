@@ -74,15 +74,15 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
         <Box sx={{ display: 'flex', alignItems: 'center', mr: 3 }}>
           <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 600 }}>
-            Provider Credentialing
+            MCheck Cred
           </Typography>
-          <Typography variant="body2" sx={{ ml: 1, opacity: 0.8 }}>
+          {/* <Typography variant="body2" sx={{ ml: 1, opacity: 0.8 }}>
             | HealthSystem Network
-          </Typography>
+          </Typography> */}
         </Box>
 
         <Box sx={{ display: 'flex', gap: 2, flexGrow: 1 }}>
-          <Button
+          {/* <Button
             color="inherit"
             sx={{ textTransform: 'none' }}
             onClick={() => navigate('/dashboard')}
@@ -102,7 +102,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             onClick={() => navigate('/verification')}
           >
             PSV
-          </Button>
+          </Button> */}
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

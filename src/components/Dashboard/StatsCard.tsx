@@ -22,6 +22,8 @@ interface StatsCardProps {
     isPositive: boolean;
   };
   loading?: boolean;
+  onClick?: () => void;
+  active?: boolean;
 }
 
 export const StatsCard: React.FC<StatsCardProps> = ({
@@ -31,6 +33,8 @@ export const StatsCard: React.FC<StatsCardProps> = ({
   color,
   trend,
   loading = false,
+  onClick,
+  active,
 }) => {
   if (loading) {
     return (
@@ -50,9 +54,14 @@ export const StatsCard: React.FC<StatsCardProps> = ({
 
   return (
     <Card 
-      sx={{ 
+      onClick={onClick}
+      sx={{
         height: '100%',
-        transition: 'transform 0.2s, box-shadow 0.2s',
+        cursor: onClick ? 'pointer' : 'default',
+        transition: 'transform 0.2s, box-shadow 0.2s, border 0.2s',
+        border: active ? '2px solid' : '1px solid transparent',
+        borderColor: active ? `${color}.main` : 'transparent',
+        boxShadow: active ? 6 : 1,
         '&:hover': {
           transform: 'translateY(-2px)',
           boxShadow: (theme) => theme.shadows[4],

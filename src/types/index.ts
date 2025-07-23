@@ -7,8 +7,16 @@ export interface Provider {
   tin?: string;
   email: string;
   phone: string;
-  intakeSource: 'manual' | 'file-upload' | 'api';
-  status: 'new' | 'validated' | 'failed' | 'pending' | 'approved' | 'rejected';
+  intakeSource: 'Roster Automation' | 'Provider Email' | 'File Upload';
+  status:
+    | 'New'
+    | 'Application Review in Progress'
+    | 'Application Submitted'
+    | 'PSV In Progress'
+    | 'Committee Approval Pending'
+    | 'Application Validation Failed'
+    | 'PSV Failed'
+    | 'Provider Credentialled';
   createdAt: string;
   updatedAt: string;
   validationErrors: ValidationError[];
@@ -83,6 +91,13 @@ export interface ValidationError {
 
 export interface DashboardStats {
   new: number;
+  inProgress: number;
+  submitted: number;
+  psvInProgress: number;
+  validationFailed: number;
+  psvFailed: number;
+  pendingCommittee: number;
+  credentialed: number;
   validated: number;
   failed: number;
   totalProviders: number;

@@ -31,11 +31,13 @@ import { Provider } from '../../types';
 interface ValidationTableProps {
   providers: Provider[];
   loading?: boolean;
+  statusFilter?: string[] | null;
 }
 
 export const ValidationTable: React.FC<ValidationTableProps> = ({
   providers,
   loading = false,
+  statusFilter = null,
 }) => {
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
@@ -68,11 +70,17 @@ export const ValidationTable: React.FC<ValidationTableProps> = ({
     handleMenuClose();
   };
 
-  const filteredProviders = providers.filter(provider =>
-    provider.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    provider.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    provider.npi?.includes(searchTerm)
-  );
+  const filteredProviders = providers.filter((provider) => {
+    const matchesSearch =
+      provider.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      provider.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      provider.npi?.includes(searchTerm);
+
+    const matchesStatus = statusFilter ? statusFilter.includes(provider.status) : true;
+
+    return matchesSearch && matchesStatus;
+  });
+
 
   const paginatedProviders = filteredProviders.slice(
     page * rowsPerPage,
@@ -81,15 +89,17 @@ export const ValidationTable: React.FC<ValidationTableProps> = ({
 
   const getStatusColor = (status: Provider['status']) => {
     switch (status) {
-      case 'validated':
+      case 'Provider Credentialled':
         return 'success';
-      case 'failed':
-        return 'error';
-      case 'pending':
+      case 'New':
+        return 'primary';
+      case 'Application Review in Progress':
+      case 'Application Submitted':
+      case 'PSV In Progress':
+      case 'Committee Approval Pending':
         return 'warning';
-      case 'approved':
-        return 'success';
-      case 'rejected':
+      case 'Application Validation Failed':
+      case 'PSV Failed':
         return 'error';
       default:
         return 'default';
