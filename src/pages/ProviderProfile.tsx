@@ -81,14 +81,18 @@ export const ProviderProfile: React.FC = () => {
 
   const getStatusColor = (status: Provider['status']) => {
     switch (status) {
-      case 'validated':
-      case 'approved':
+      case 'Provider Credentialled':
         return 'success';
-      case 'failed':
-      case 'rejected':
-        return 'error';
-      case 'pending':
+      case 'New':
+        return 'primary';
+      case 'Application Review in Progress':
+      case 'Application Submitted':
+      case 'PSV In Progress':
+      case 'Committee Approval Pending':
         return 'warning';
+      case 'Application Validation Failed':
+      case 'PSV Failed':
+        return 'error';
       default:
         return 'default';
     }
@@ -126,11 +130,11 @@ export const ProviderProfile: React.FC = () => {
             <Typography variant="body2" color="text.secondary">
               Intake Source: {provider.intakeSource}
             </Typography>
-            {provider.npi && (
+            {/* {provider.npi && (
               <Typography variant="body2" color="text.secondary">
                 NPI: {provider.npi}
               </Typography>
-            )}
+            )} */}
           </Box>
         </Box>
         <Button
@@ -159,30 +163,36 @@ export const ProviderProfile: React.FC = () => {
             <TabPanel value={tabValue} index={0}>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
-                  <Typography variant="h6" gutterBottom>Personal Information</Typography>
+                  <Typography variant="h6" gutterBottom sx={{ ml: 2 }}>Personal Information</Typography>
                   <List>
-                    <ListItem>
+                    <ListItem sx={{ ml: 2 }}>
                       <ListItemText
                         primary="Full Name"
                         secondary={`${provider.firstName} ${provider.lastName}`}
                       />
                     </ListItem>
-                    <ListItem>
+                    <ListItem sx={{ ml: 2 }}>
                       <ListItemText
                         primary="Date of Birth"
                         secondary={provider.demographics.dateOfBirth || 'Not provided'}
                       />
                     </ListItem>
-                    <ListItem>
+                    <ListItem sx={{ ml: 2 }}>
                       <ListItemText
                         primary="Gender"
                         secondary={provider.demographics.gender || 'Not provided'}
                       />
                     </ListItem>
-                    <ListItem>
+                    <ListItem sx={{ ml: 2 }}>
                       <ListItemText
                         primary="SSN"
                         secondary={provider.demographics.ssn || 'Not provided'}
+                      />
+                    </ListItem>
+                    <ListItem sx={{ ml: 2 }}>
+                      <ListItemText
+                        primary="NPI"
+                        secondary={provider.npi || 'Not provided'}
                       />
                     </ListItem>
                   </List>
@@ -193,8 +203,8 @@ export const ProviderProfile: React.FC = () => {
             <TabPanel value={tabValue} index={1}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
-                  <Typography variant="h6" gutterBottom>Address</Typography>
-                  <Card variant="outlined">
+                  <Typography variant="h6" gutterBottom sx={{ ml: 2 }}>Address</Typography>
+                  <Card variant="outlined" sx={{ ml: 2 }}>
                     <CardContent>
                       <Box display="flex" alignItems="center" mb={2}>
                         <Typography variant="body1" flexGrow={1}>
@@ -208,7 +218,7 @@ export const ProviderProfile: React.FC = () => {
                         )}
                       </Box>
                       <Chip
-                        label={provider.contact.address.isValidated ? 'USPS Validated' : 'Validation Failed'}
+                        label={provider.contact.address.isValidated ? 'USCIS Validated' : 'Validation Failed'}
                         color={provider.contact.address.isValidated ? 'success' : 'error'}
                         size="small"
                       />
@@ -238,54 +248,84 @@ export const ProviderProfile: React.FC = () => {
             <TabPanel value={tabValue} index={2}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
-                  <Typography variant="h6" gutterBottom>Identifiers</Typography>
+                  <Typography variant="h6" gutterBottom sx={{ ml: 2 }}>Credentials</Typography>
                   <List>
-                    <ListItem>
+                    <ListItem sx={{ ml: 2 }}>
                       <ListItemText
                         primary="NPI"
                         secondary={provider.npi || 'Not provided'}
                       />
                     </ListItem>
-                    <ListItem>
+                    <ListItem sx={{ ml: 2 }}>
                       <ListItemText
                         primary="TIN"
                         secondary={provider.tin || 'Not provided'}
                       />
                     </ListItem>
-                    <ListItem>
+                    <ListItem sx={{ ml: 2 }}>
+                      <ListItemText
+                        primary="CAQH ID"
+                        secondary={provider.credentials.caqhId || 'Not provided'}
+                      />
+                    </ListItem>
+                    <ListItem sx={{ ml: 2 }}>
                       <ListItemText
                         primary="DEA Number"
                         secondary={provider.credentials.deaNumber || 'Not provided'}
                       />
                     </ListItem>
+                    <ListItem sx={{ ml: 2 }}>
+                      <ListItemText
+                        primary="Medicaid License"
+                        secondary={provider.credentials.medicaidLicense || 'Not provided'}
+                      />
+                    </ListItem>
+                    <ListItem sx={{ ml: 2 }}>
+                      <ListItemText
+                        primary="Board Certification"
+                        secondary={provider.credentials.boardCertification || 'Not provided'}
+                      />
+                    </ListItem>
+                    <ListItem sx={{ ml: 2 }}>
+                      <ListItemText
+                        primary="Degree"
+                        secondary={provider.credentials.degree || 'Not provided'}
+                      />
+                    </ListItem>
                   </List>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography variant="h6" gutterBottom>Licenses</Typography>
-                  {provider.credentials.stateLicenses.map((license) => (
-                    <Card key={license.id} variant="outlined" sx={{ mb: 2 }}>
-                      <CardContent>
-                        <Box display="flex" alignItems="center" justify="space-between">
-                          <Box>
-                            <Typography variant="body1" fontWeight={600}>
-                              {license.state} License
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              {license.licenseNumber}
-                            </Typography>
-                            <Typography variant="caption">
-                              Expires: {license.expirationDate}
-                            </Typography>
+                  <Typography variant="h6" gutterBottom sx={{ mr: 2}}>Licenses</Typography>
+                  {provider.credentials.stateLicenses.length > 0 ? (
+                    provider.credentials.stateLicenses.map((license) => (
+                      <Card key={license.id} variant="outlined" sx={{ mb: 2, ml: 2, mr: 2 }}>
+                        <CardContent>
+                          <Box display="flex" alignItems="center" justifyContent="space-between">
+                            <Box>
+                              <Typography variant="body1" fontWeight={600}>
+                                {license.state} License
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary">
+                                {license.licenseNumber}
+                              </Typography>
+                              <Typography variant="caption">
+                                Expires: {license.expirationDate}
+                              </Typography>
+                            </Box>
+                            <Chip
+                              label={license.status}
+                              color={license.status === 'active' ? 'success' : 'error'}
+                              size="small"
+                            />
                           </Box>
-                          <Chip
-                            label={license.status}
-                            color={license.status === 'active' ? 'success' : 'error'}
-                            size="small"
-                          />
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    ))
+                  ) : (
+                    <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+                      No state licenses provided
+                    </Typography>
+                  )}
                 </Grid>
               </Grid>
             </TabPanel>
@@ -322,15 +362,44 @@ export const ProviderProfile: React.FC = () => {
               <List dense>
                 <ListItem>
                   <ListItemIcon>
-                    {provider.demographics.dateOfBirth ? (
+                    {provider.npi ? (
                       <CheckCircleIcon color="success" />
                     ) : (
                       <ErrorIcon color="error" />
                     )}
                   </ListItemIcon>
-                  <ListItemText primary="Demographics" />
+                  <ListItemText primary="NPI" />
                 </ListItem>
-                
+                <ListItem>
+                  <ListItemIcon>
+                    {provider.phone ? (
+                      <CheckCircleIcon color="success" />
+                    ) : (
+                      <ErrorIcon color="error" />
+                    )}
+                  </ListItemIcon>
+                  <ListItemText primary="Phone" />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    {provider.email ? (
+                      <CheckCircleIcon color="success" />
+                    ) : (
+                      <ErrorIcon color="error" />
+                    )}
+                  </ListItemIcon>
+                  <ListItemText primary="Email" />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    {provider.tin ? (
+                      <CheckCircleIcon color="success" />
+                    ) : (
+                      <ErrorIcon color="error" />
+                    )}
+                  </ListItemIcon>
+                  <ListItemText primary="TIN" />
+                </ListItem>
                 <ListItem>
                   <ListItemIcon>
                     {provider.contact.address.isValidated ? (
@@ -339,29 +408,17 @@ export const ProviderProfile: React.FC = () => {
                       <ErrorIcon color="error" />
                     )}
                   </ListItemIcon>
-                  <ListItemText primary="Address Validation" />
+                  <ListItemText primary="Address Standardized" />
                 </ListItem>
-                
                 <ListItem>
                   <ListItemIcon>
-                    {provider.npi ? (
+                    {provider.credentials.specialties && provider.credentials.specialties.length > 0 ? (
                       <CheckCircleIcon color="success" />
                     ) : (
                       <ErrorIcon color="error" />
                     )}
                   </ListItemIcon>
-                  <ListItemText primary="NPI Verification" />
-                </ListItem>
-                
-                <ListItem>
-                  <ListItemIcon>
-                    {provider.credentials.stateLicenses.length > 0 ? (
-                      <CheckCircleIcon color="success" />
-                    ) : (
-                      <ErrorIcon color="error" />
-                    )}
-                  </ListItemIcon>
-                  <ListItemText primary="License Verification" />
+                  <ListItemText primary="Specialty/Taxonomy" />
                 </ListItem>
               </List>
 
